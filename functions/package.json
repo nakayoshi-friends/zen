@@ -1,0 +1,41 @@
+{
+  "name": "zen-slack",
+  "version": "1.0.0",
+  "description": "slack上でzenを送りあうことができます",
+  "main": "lib/index.js",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts .",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "npm run build && firebase deploy --only functions",
+    "logs": "firebase functions:log",
+    "emulator": "npm run build && firebase emulators:start --import=data/v0 --export-on-exit"
+  },
+  "dependencies": {
+    "axios": "^1.6.7",
+    "dayjs": "^1.11.9",
+    "firebase-admin": "^10.0.2",
+    "firebase-functions": "^4.2.1",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
+    "eslint": "^8.9.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-unused-imports": "^2.0.0",
+    "firebase-functions-test": "^0.2.0",
+    "prettier": "^2.8.1",
+    "typescript": "^4.5.4"
+  },
+  "volta": {
+    "node": "18.12.0",
+    "npm": "8.19.2"
+  }
+}
