@@ -4,11 +4,11 @@ import { WebClient } from '@slack/web-api';
 
 const testModalApiHandler = functions.region('asia-northeast1').https.onRequest(async (req, res) => {
   const web = new WebClient(process.env.SLACK_TOKEN);
-  console.log(req.body.payload);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  const trigger_id: string = req.body.payload.trigger_id as string;
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
+  const { trigger_id } = JSON.parse(req.body.payload);
   const result = await web.views.open({
-    trigger_id: trigger_id,
+    trigger_id: trigger_id as string,
     view: {
       type: 'modal',
       title: {
