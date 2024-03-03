@@ -5,6 +5,7 @@ import * as functions from 'firebase-functions';
 import { postPoint } from '../function/others/postPoint';
 import { sendZenkouForm } from '../function/others/sendZenkouForm';
 
+// slack上のアクション時呼ばれるエンドポイント
 export const slackInteraction = functions.region('asia-northeast1').https.onRequest(async (req, res) => {
   // Bot User OAuth Access Tokenを設定
   const slackWebClient = new WebClient(process.env.SLACK_TOKEN);
@@ -34,6 +35,7 @@ export const slackInteraction = functions.region('asia-northeast1').https.onRequ
       break;
     }
 
+    // ボタンのクリックイベントを処理
     case 'block_actions': {
       // action_idによって処理を分岐
       const channelId = payload.channel.id as string;

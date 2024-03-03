@@ -3,6 +3,7 @@ import * as functions from 'firebase-functions';
 
 import { displayPostModal } from '../function/others/displayPostModal';
 
+// /zen で呼び出されるエンドポイント
 export const displayModal = functions.region('asia-northeast1').https.onRequest(async (req, res) => {
   // Bot User OAuth Access Tokenを設定
   const slackWebClient = new WebClient(process.env.SLACK_TOKEN);
