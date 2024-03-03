@@ -2,11 +2,12 @@
 import { WebClient } from '@slack/web-api';
 import * as functions from 'firebase-functions';
 
+import { postPoint } from '../function/others/postPoint';
 import { sendZenkouForm } from '../function/others/sendZenkouForm';
 
 export const slackInteraction = functions.region('asia-northeast1').https.onRequest(async (req, res) => {
   // Bot User OAuth Access Tokenを設定
-  const web = new WebClient(process.env.SLACK_TOKEN);
+  const slackWebClient = new WebClient(process.env.SLACK_TOKEN);
 
   // リクエストのペイロードを解析する
   // FIXME: eslint-disableを外す
@@ -23,7 +24,7 @@ export const slackInteraction = functions.region('asia-northeast1').https.onRequ
         const selectedUserId = payload.view.state.values['zen_user']['users_select-action']?.selected_user as string;
         const channelId = payload.view.state.values['posted_channel']['channel_input'].value as string;
         const userInput = payload.view.state.values['zen_content']['plain_text_input-action'].value as string;
-        await sendZenkouForm(web, selectedUserId, userInput, channelId, res);
+        await sendZenkouForm(slackWebClient, selectedUserId, userInput, channelId, res);
         // 必要な処理を行った後、正常に処理されたことをSlackに通知
         res.json({ response_action: 'clear' });
       } catch (e) {
@@ -35,20 +36,26 @@ export const slackInteraction = functions.region('asia-northeast1').https.onRequ
 
     case 'block_actions': {
       // action_idによって処理を分岐
+      const channelId = payload.channel.id as string;
+      const postedUserId = payload.user.id as string;
+      // const messageTs = payload.container.message_ts as number;
+      const zenkouId = 'xxx';
+
       switch (payload.actions[0].action_id) {
         case 'action-10':
-          console.log('10ポイントを投げた');
+          await postPoint(slackWebClient, channelId, 10, postedUserId, zenkouId);
           break;
         case 'action-20':
-          console.log('20ポイントを投げた');
+          await postPoint(slackWebClient, channelId, 20, postedUserId, zenkouId);
           break;
         case 'action-30':
-          console.log('30ポイントを投げた');
+          await postPoint(slackWebClient, channelId, 30, postedUserId, zenkouId);
           break;
         default:
           console.log('未知のアクションID:', payload.actions[0].action_id);
           res.status(400).send('未知のアクションIDです');
       }
+      res.status(200).send('OK');
       break;
     }
 
