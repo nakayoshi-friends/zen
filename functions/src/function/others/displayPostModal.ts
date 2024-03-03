@@ -1,11 +1,9 @@
 import { ViewsOpenArguments, WebClient } from '@slack/web-api';
-import * as functions from 'firebase-functions';
 
 export const displayPostModal = async (
   slackWebClient: WebClient,
   triggerId: string,
   channelId: string,
-  res: functions.Response<any>,
 ): Promise<void> => {
   const modalViewJSON: ViewsOpenArguments = {
     trigger_id: triggerId,

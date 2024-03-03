@@ -15,7 +15,8 @@ export const displayModal = functions.region('asia-northeast1').https.onRequest(
   console.log(req.body); // デバッグ用
 
   try {
-    await displayPostModal(slackWebClient, triggerId, channelId, res);
+    await displayPostModal(slackWebClient, triggerId, channelId);
+    res.status(200).send('OK');
   } catch (e) {
     console.error('Error display modal: ', e);
     res.status(500).send('Error display modal');
