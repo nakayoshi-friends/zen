@@ -7,7 +7,7 @@ interface Config {
   };
 }
 
-const testApiHandler = functions.region('asia-northeast1').https.onRequest((req, res) => {
+export const testApi = functions.region('asia-northeast1').https.onRequest((req, res) => {
   const config = functions.config() as Config;
   if (!config?.deployinfo?.date) {
     res.send('config.deployinfo.date is undefined');
@@ -15,5 +15,3 @@ const testApiHandler = functions.region('asia-northeast1').https.onRequest((req,
   }
   res.send(`this is deployed on ${dayjs(config.deployinfo.date).format('YYYY-MM-DD HH:mm:ss')}`);
 });
-
-export default testApiHandler;

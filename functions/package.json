@@ -15,6 +15,7 @@
     "emulator": "npm run build && firebase emulators:start --import=data/v0 --export-on-exit"
   },
   "dependencies": {
+    "@slack/web-api": "^7.0.2",
     "axios": "^1.6.7",
     "dayjs": "^1.11.9",
     "firebase-admin": "^10.0.2",
