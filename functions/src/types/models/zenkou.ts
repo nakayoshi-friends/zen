@@ -6,7 +6,7 @@ export interface Zenkou extends DocumentBase {
   isDeleted: boolean;
 }
 
-interface DonatedPoint {
+export interface DonatedPoint {
   userId: string;
   point: number;
 }

@@ -1,12 +1,12 @@
 import { DocumentData, FirestoreDataConverter, QueryDocumentSnapshot } from 'firebase-admin/firestore';
 
-import { DOKOKICHI_WORKSPACE_ID, VERSION } from '../../constants';
+import { VERSION } from '../../constants';
 import { firestore } from '../../init';
 import { User } from '../../types/models/user';
 
-export const fetechUserList = async () => {
+export const fetechUserList = async (workspaceId: string) => {
   const _collectionRef = firestore
-    .collection(`version/${VERSION}/workspace/${DOKOKICHI_WORKSPACE_ID}/user`)
+    .collection(`version/${VERSION}/workspace/${workspaceId}/user`)
     .withConverter(userConverter);
   const _querySnapshot = await _collectionRef.get();
   const _docs = _querySnapshot.docs;
@@ -14,11 +14,23 @@ export const fetechUserList = async () => {
   return _ladies;
 };
 
-export const findUser = async (id: string): Promise<User | null> => {
-  const _docRef = firestore.collection(`version/${VERSION}/users`).doc(id).withConverter(userConverter);
+export const findUser = async (workspaceId: string, userId: string): Promise<User | null> => {
+  const _docRef = firestore
+    .collection(`version/${VERSION}/workspace/${workspaceId}/user`)
+    .doc(userId)
+    .withConverter(userConverter);
   const _docSnapshot = await _docRef.get();
   const _User = _docSnapshot.data();
   return _User || null;
+};
+
+// createもこれを使う
+export const updateUser = async (workspaceId: string, updatedUser: User): Promise<void> => {
+  const _docRef = firestore
+    .collection(`version/${VERSION}/workspace/${workspaceId}/user`)
+    .doc(updatedUser.id)
+    .withConverter(userConverter);
+  await _docRef.set(updatedUser);
 };
 
 export const userConverter: FirestoreDataConverter<User> = {
