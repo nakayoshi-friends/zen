@@ -38,26 +38,36 @@ export const slackInteraction = functions.region('asia-northeast1').https.onRequ
     // ボタンのクリックイベントを処理
     case 'block_actions': {
       // action_idによって処理を分岐
-      const channelId = payload.channel.id as string;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const channelId = (payload.channel?.id as string) ?? '';
       const postedUserId = payload.user.id as string;
-      // const messageTs = payload.container.message_ts as number;
-      const zenkouId = 'xxx';
+      const messageTs = (payload.message?.ts as string) ?? ''; // zenkouIdにあたる
+      const text = (payload.message?.text as string) ?? '';
+      const zenkouUserId = text.match(/<@(\w+)>/)?.[1] ?? ''; // 正規表現を使用してテキストからユーザーIDを抽出
 
       switch (payload.actions[0].action_id) {
+        // zenを投げるボタンを押したときの処理
         case 'action-10':
-          await postPoint(slackWebClient, channelId, 10, postedUserId, zenkouId);
+          await postPoint(slackWebClient, channelId, 10, postedUserId, zenkouUserId, messageTs);
+          res.status(200).send('OK');
           break;
         case 'action-20':
-          await postPoint(slackWebClient, channelId, 20, postedUserId, zenkouId);
+          await postPoint(slackWebClient, channelId, 20, postedUserId, zenkouUserId, messageTs);
+          res.status(200).send('OK');
           break;
         case 'action-30':
-          await postPoint(slackWebClient, channelId, 30, postedUserId, zenkouId);
+          await postPoint(slackWebClient, channelId, 30, postedUserId, zenkouUserId, messageTs);
+          res.status(200).send('OK');
+          break;
+        // モーダルでユーザーを選択したときの処理
+        case 'users_select-action':
+          // 何もしない
+          res.status(200).send('OK');
           break;
         default:
           console.log('未知のアクションID:', payload.actions[0].action_id);
           res.status(400).send('未知のアクションIDです');
       }
-      res.status(200).send('OK');
       break;
     }
 
