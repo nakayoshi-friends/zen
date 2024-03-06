@@ -1,14 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import * as functions from 'firebase-functions';
-import { WebClient } from '@slack/web-api';
+import { ViewsOpenArguments, WebClient } from '@slack/web-api';
 
-const testModalApiHandler = functions.region('asia-northeast1').https.onRequest(async (req, res) => {
-  const web = new WebClient(process.env.SLACK_TOKEN);
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
-  const { trigger_id } = JSON.parse(req.body.payload);
-  const result = await web.views.open({
-    trigger_id: trigger_id as string,
+export const displayPostModal = async (
+  slackWebClient: WebClient,
+  triggerId: string,
+  channelId: string,
+): Promise<void> => {
+  const modalViewJSON: ViewsOpenArguments = {
+    trigger_id: triggerId,
     view: {
       type: 'modal',
       title: {
@@ -28,10 +26,25 @@ const testModalApiHandler = functions.region('asia-northeast1').https.onRequest(
       },
       blocks: [
         {
+          type: 'input',
+          block_id: 'posted_channel',
+          element: {
+            type: 'plain_text_input',
+            action_id: 'channel_input',
+            initial_value: channelId,
+          },
+          label: {
+            type: 'plain_text',
+            text: 'チャンネルID (変更しないでください)',
+            emoji: true,
+          },
+        },
+        {
           type: 'section',
+          block_id: 'zen_user',
           text: {
             type: 'mrkdwn',
-            text: '誰のzenを報告する？',
+            text: '誰の善行を報告する？',
           },
           accessory: {
             type: 'users_select',
@@ -45,21 +58,21 @@ const testModalApiHandler = functions.region('asia-northeast1').https.onRequest(
         },
         {
           type: 'input',
+          block_id: 'zen_content',
           element: {
             type: 'plain_text_input',
+            multiline: true,
             action_id: 'plain_text_input-action',
           },
           label: {
             type: 'plain_text',
-            text: 'どんなzen？',
+            text: 'どんな善行？',
             emoji: true,
           },
         },
       ],
     },
-  });
-  console.log(result);
-  res.send('OK');
-});
+  };
 
-export default testModalApiHandler;
+  await slackWebClient.views.open(modalViewJSON);
+};
