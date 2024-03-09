@@ -28,6 +28,21 @@ export const postPoint = async (
     postUser = newUser;
   }
 
+  const zenkou = await findZenkou(DOKOKICHI_WORKSPACE_ID, zenkouUserId, zenkouId);
+  if (!zenkou) throw new Error('zenkou not found');
+
+  // 同じ善行に対して複数回投げ銭できないようにする
+  if (zenkou.donatedPointList.some((donatedPoint) => donatedPoint.userId === postUserId)) {
+    const postEphemeral: ChatPostEphemeralArguments = {
+      channel: channelId,
+      user: postUserId,
+      text: 'このzenにはすでに投げ銭済みです。',
+    };
+    // あなただけに表示されるメッセージを送信
+    await slackWebClient.chat.postEphemeral(postEphemeral);
+    return;
+  }
+
   // メッセージの内容を設定
   const postEphemeral: ChatPostEphemeralArguments = {
     channel: channelId,
@@ -45,9 +60,6 @@ export const postPoint = async (
   await updateUser(DOKOKICHI_WORKSPACE_ID, updatedUser);
 
   // zenkouにzenを加算
-  const zenkou = await findZenkou(DOKOKICHI_WORKSPACE_ID, zenkouUserId, zenkouId);
-  if (!zenkou) throw new Error('zenkou not found');
-
   const newDonatedPoint: DonatedPoint = {
     userId: postUserId,
     point: amount,
