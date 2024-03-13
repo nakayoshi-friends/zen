@@ -10,3 +10,8 @@ export interface DonatedPoint {
   userId: string;
   point: number;
 }
+
+export interface TotalPoint {
+  userId: string;
+  point: number;
+}
