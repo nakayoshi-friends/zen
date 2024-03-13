@@ -63,6 +63,7 @@ export const postPoint = async (
   const newDonatedPoint: DonatedPoint = {
     userId: postUserId,
     point: amount,
+    createdAt: Date.now(),
   };
   const donatedPointList = [...zenkou.donatedPointList, newDonatedPoint];
   const updatedZenkou: Zenkou = {

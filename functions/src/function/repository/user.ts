@@ -4,7 +4,7 @@ import { VERSION } from '../../constants';
 import { firestore } from '../../init';
 import { User } from '../../types/models/user';
 
-export const fetechUserList = async (workspaceId: string) => {
+export const fetchUserList = async (workspaceId: string) => {
   const _collectionRef = firestore
     .collection(`version/${VERSION}/workspace/${workspaceId}/user`)
     .withConverter(userConverter);

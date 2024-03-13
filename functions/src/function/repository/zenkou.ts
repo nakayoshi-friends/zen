@@ -4,7 +4,7 @@ import { VERSION } from '../../constants';
 import { firestore } from '../../init';
 import { Zenkou } from '../../types/models/zenkou';
 
-export const fetechZenkouList = async (workspaceId: string, userId: string) => {
+export const fetchZenkouList = async (workspaceId: string, userId: string) => {
   const _collectionRef = firestore
     .collection(`version/${VERSION}/workspace/${workspaceId}/user/${userId}/zenkou`)
     .withConverter(zenkouConverter);
