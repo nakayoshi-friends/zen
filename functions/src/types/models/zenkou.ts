@@ -9,6 +9,7 @@ export interface Zenkou extends DocumentBase {
 export interface DonatedPoint {
   userId: string;
   point: number;
+  createdAt: number;
 }
 
 export interface TotalPoint {
