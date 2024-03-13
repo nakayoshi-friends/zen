@@ -43,6 +43,18 @@ export const postPoint = async (
     return;
   }
 
+  // ポイントが足りない場合はエラーメッセージを表示
+  if (postUser.availablePoint < amount) {
+    const postEphemeral: ChatPostEphemeralArguments = {
+      channel: channelId,
+      user: postUserId,
+      text: `zenが足りません。今週はあと${postUser.availablePoint}zenです。`,
+    };
+    // あなただけに表示されるメッセージを送信
+    await slackWebClient.chat.postEphemeral(postEphemeral);
+    return;
+  }
+
   // メッセージの内容を設定
   const postEphemeral: ChatPostEphemeralArguments = {
     channel: channelId,
