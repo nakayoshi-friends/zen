@@ -58,7 +58,7 @@ export const broadcastZenResult = functions
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: `*獲得ポイント数ランキング*\n1位:<@${totalPointList[0].userId}>：${totalPointList[0].point}pt \n2位:<@${totalPointList[1].userId}>：${totalPointList[1].point}pt \n3位:<@${totalPointList[2].userId}>：${totalPointList[2].point}pt`,
+              text: `*獲得ポイント数ランキング*\n1位:<@${totalPointList[0].userId}>：${totalPointList[0].point}zen \n2位:<@${totalPointList[1].userId}>：${totalPointList[1].point}zen \n3位:<@${totalPointList[2].userId}>：${totalPointList[2].point}zen`,
             },
           },
           {
