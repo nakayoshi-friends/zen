@@ -5,17 +5,17 @@ import * as functions from 'firebase-functions';
 import { postPoint } from '../function/others/postPoint';
 import { sendZenkouForm } from '../function/others/sendZenkouForm';
 import { findWorkspace } from '../function/repository/workspace';
+import { InteractionRequestBody, ModalInputValues } from '../types/slackResponse';
 
 // slack上のアクション時呼ばれるエンドポイント
 export const slackInteraction = functions.region('asia-northeast1').https.onRequest(async (req, res) => {
   try {
     // リクエストのペイロードを解析する
-    // FIXME: eslint-disableを外す
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument
-    const payload = JSON.parse(req.body.payload || '{}');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    const payload = JSON.parse(req.body.payload || '{}') as InteractionRequestBody;
     console.log('payload:', payload); // デバッグ用
 
-    const workspaceId = (payload.team?.id as string) ?? '';
+    const workspaceId = payload.team?.id ?? '';
     // ワークスペースIDからアクセストークンを取得
 
     const _workspace = await findWorkspace(workspaceId);
@@ -28,9 +28,12 @@ export const slackInteraction = functions.region('asia-northeast1').https.onRequ
       // モーダルの送信イベントを処理
       case 'view_submission': {
         try {
-          const selectedUserId = payload.view.state.values['zen_user']['users_select-action']?.selected_user as string;
-          const channelId = payload.view.state.values['posted_channel']['channel_input'].value as string;
-          const userInput = payload.view.state.values['zen_content']['plain_text_input-action'].value as string;
+          // モーダルの送信イベントの場合なので、モーダルの入力値の型にキャスト
+          const values = payload.view?.state.values as ModalInputValues;
+          const selectedUserId = values.zen_user?.['users_select-action']?.selected_user ?? '';
+          const channelId = values.posted_channel?.channel_input?.value ?? '';
+          const userInput = values.zen_content?.['plain_text_input-action']?.value ?? '';
+
           await sendZenkouForm(slackWebClient, selectedUserId, userInput, workspaceId, channelId, res);
           // 必要な処理を行った後、正常に処理されたことをSlackに通知
           res.json({ response_action: 'clear' });
@@ -44,14 +47,13 @@ export const slackInteraction = functions.region('asia-northeast1').https.onRequ
       // ボタンのクリックイベントを処理
       case 'block_actions': {
         // action_idによって処理を分岐
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const channelId = (payload.channel?.id as string) ?? '';
-        const postedUserId = payload.user.id as string;
-        const messageTs = (payload.message?.ts as string) ?? ''; // zenkouIdにあたる
-        const text = (payload.message?.text as string) ?? '';
+        const channelId = payload.channel?.id ?? '';
+        const postedUserId = payload.user.id;
+        const messageTs = payload.message?.ts ?? ''; // zenkouIdにあたる
+        const text = payload.message?.text ?? '';
         const zenkouUserId = text.match(/<@(\w+)>/)?.[1] ?? ''; // 正規表現を使用してテキストからユーザーIDを抽出
 
-        switch (payload.actions[0].action_id) {
+        switch (payload?.actions?.[0].action_id) {
           // zenを投げるボタンを押したときの処理
           case 'action-10':
             await postPoint(slackWebClient, workspaceId, channelId, 10, postedUserId, zenkouUserId, messageTs);
@@ -71,30 +73,8 @@ export const slackInteraction = functions.region('asia-northeast1').https.onRequ
             res.status(200).send('OK');
             break;
           default:
-            console.log('未知のアクションID:', payload.actions[0].action_id);
+            console.log('未知のアクションID:', payload?.actions?.[0].action_id);
             res.status(400).send('未知のアクションIDです');
-        }
-        break;
-      }
-
-      case 'message_action': {
-        // 多分不要
-        try {
-          console.log('message_actionを処理');
-        } catch (e) {
-          console.error('Error display modal: ', e);
-          res.status(500).send('Error display modal');
-        }
-        break;
-      }
-
-      case 'shortcut': {
-        // 多分不要
-        try {
-          console.log('shortcutを処理');
-        } catch (e) {
-          console.error('Error display modal: ', e);
-          res.status(500).send('Error display modal');
         }
         break;
       }
