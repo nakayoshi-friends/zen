@@ -17,6 +17,8 @@ export const slackInteraction = functions.region('asia-northeast1').https.onRequ
 
   console.log('payload:', payload); // デバッグ用
 
+  const workspaceId = (payload.team?.id as string) ?? '';
+
   // Slackからのイベントタイプによって処理を分岐
   switch (payload.type) {
     // モーダルの送信イベントを処理
@@ -25,7 +27,7 @@ export const slackInteraction = functions.region('asia-northeast1').https.onRequ
         const selectedUserId = payload.view.state.values['zen_user']['users_select-action']?.selected_user as string;
         const channelId = payload.view.state.values['posted_channel']['channel_input'].value as string;
         const userInput = payload.view.state.values['zen_content']['plain_text_input-action'].value as string;
-        await sendZenkouForm(slackWebClient, selectedUserId, userInput, channelId, res);
+        await sendZenkouForm(slackWebClient, selectedUserId, userInput, workspaceId, channelId, res);
         // 必要な処理を行った後、正常に処理されたことをSlackに通知
         res.json({ response_action: 'clear' });
       } catch (e) {
@@ -48,15 +50,15 @@ export const slackInteraction = functions.region('asia-northeast1').https.onRequ
       switch (payload.actions[0].action_id) {
         // zenを投げるボタンを押したときの処理
         case 'action-10':
-          await postPoint(slackWebClient, channelId, 10, postedUserId, zenkouUserId, messageTs);
+          await postPoint(slackWebClient, workspaceId, channelId, 10, postedUserId, zenkouUserId, messageTs);
           res.status(200).send('OK');
           break;
         case 'action-20':
-          await postPoint(slackWebClient, channelId, 20, postedUserId, zenkouUserId, messageTs);
+          await postPoint(slackWebClient, workspaceId, channelId, 20, postedUserId, zenkouUserId, messageTs);
           res.status(200).send('OK');
           break;
         case 'action-30':
-          await postPoint(slackWebClient, channelId, 30, postedUserId, zenkouUserId, messageTs);
+          await postPoint(slackWebClient, workspaceId, channelId, 30, postedUserId, zenkouUserId, messageTs);
           res.status(200).send('OK');
           break;
         // モーダルでユーザーを選択したときの処理
