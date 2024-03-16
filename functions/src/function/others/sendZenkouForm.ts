@@ -1,5 +1,4 @@
 import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
-import * as functions from 'firebase-functions';
 
 import { User } from '../../types/models/user';
 import { Zenkou } from '../../types/models/zenkou';
@@ -13,7 +12,6 @@ export const sendZenkouForm = async (
   userInput: string, // モーダルから入力されたテキスト
   workspaceId: string,
   channelId: string, // 投稿するチャンネルID
-  res: functions.Response<any>,
 ): Promise<void> => {
   // モーダルの送信イベントの処理
 
