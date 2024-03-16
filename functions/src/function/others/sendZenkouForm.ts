@@ -1,7 +1,6 @@
 import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
 import * as functions from 'firebase-functions';
 
-import { DOKOKICHI_WORKSPACE_ID } from '../../constants';
 import { User } from '../../types/models/user';
 import { Zenkou } from '../../types/models/zenkou';
 import { findUser, updateUser } from '../repository/user';
@@ -12,12 +11,13 @@ export const sendZenkouForm = async (
   slackWebClient: WebClient,
   selectedUserId: string,
   userInput: string, // モーダルから入力されたテキスト
+  workspaceId: string,
   channelId: string, // 投稿するチャンネルID
   res: functions.Response<any>,
 ): Promise<void> => {
   // モーダルの送信イベントの処理
 
-  const selectedUser = await findUser(DOKOKICHI_WORKSPACE_ID, selectedUserId);
+  const selectedUser = await findUser(workspaceId, selectedUserId);
   // selectedUserのドキュメントが存在しなければ新規作成し、200 zen付与する
   if (!selectedUser) {
     const newUser: User = {
@@ -27,7 +27,7 @@ export const sendZenkouForm = async (
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
-    await updateUser(DOKOKICHI_WORKSPACE_ID, newUser);
+    await updateUser(workspaceId, newUser);
   }
 
   // メッセージの内容を設定
@@ -113,5 +113,5 @@ export const sendZenkouForm = async (
     updatedAt: Date.now(),
     isDeleted: false,
   };
-  await updateZenkou(DOKOKICHI_WORKSPACE_ID, selectedUserId, zenkou);
+  await updateZenkou(workspaceId, selectedUserId, zenkou);
 };
