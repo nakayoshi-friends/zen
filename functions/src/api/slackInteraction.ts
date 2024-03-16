@@ -34,7 +34,7 @@ export const slackInteraction = functions.region('asia-northeast1').https.onRequ
           const channelId = values.posted_channel?.channel_input?.value ?? '';
           const userInput = values.zen_content?.['plain_text_input-action']?.value ?? '';
 
-          await sendZenkouForm(slackWebClient, selectedUserId, userInput, workspaceId, channelId, res);
+          await sendZenkouForm(slackWebClient, selectedUserId, userInput, workspaceId, channelId);
           // 必要な処理を行った後、正常に処理されたことをSlackに通知
           res.json({ response_action: 'clear' });
         } catch (e) {
