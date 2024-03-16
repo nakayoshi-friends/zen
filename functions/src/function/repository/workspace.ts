@@ -22,6 +22,14 @@ export const findWorkspace = async (workspaceId: string): Promise<Workspace | nu
   return _workspace || null;
 };
 
+export const updateWorkspace = async (updatedWorkspace: Workspace): Promise<void> => {
+  const _docRef = firestore
+    .collection(`version/${VERSION}/workspace`)
+    .doc(updatedWorkspace.id)
+    .withConverter(workSpaceConverter);
+  await _docRef.set(updatedWorkspace);
+};
+
 export const workSpaceConverter: FirestoreDataConverter<Workspace> = {
   toFirestore: (workspace: Workspace): DocumentData => {
     const newDoc: Partial<Workspace> = { ...workspace };
@@ -34,6 +42,7 @@ export const workSpaceConverter: FirestoreDataConverter<Workspace> = {
       id: snapshot.id,
       name: data.name,
       zenkouChannelId: data.zenkouChannelId,
+      accessToken: data.accessToken,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
     };
