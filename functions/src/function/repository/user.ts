@@ -8,10 +8,9 @@ export const fetchUserList = async (workspaceId: string) => {
   const _collectionRef = firestore
     .collection(`version/${VERSION}/workspace/${workspaceId}/user`)
     .withConverter(userConverter);
-  const _querySnapshot = await _collectionRef.get();
-  const _docs = _querySnapshot.docs;
-  const _ladies = _docs.map((_doc) => _doc.data());
-  return _ladies;
+  const _queryDocSnapshot = (await _collectionRef.get()).docs;
+  const _users = _queryDocSnapshot.map((_doc) => _doc.data());
+  return _users;
 };
 
 export const findUser = async (workspaceId: string, userId: string): Promise<User | null> => {
