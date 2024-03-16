@@ -3,6 +3,7 @@ import * as functions from 'firebase-functions';
 
 import { updateWorkspace } from '../function/repository/workspace';
 import { Workspace } from '../types/models/workspace';
+import { SlackOAuthResponse } from '../types/slackResponse';
 
 // OAuthで呼び出されるエンドポイント
 export const oAuth = functions.region('asia-northeast1').https.onRequest(async (req, res) => {
@@ -25,21 +26,18 @@ export const oAuth = functions.region('asia-northeast1').https.onRequest(async (
         },
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const data = response.data;
+      const data = response.data as SlackOAuthResponse;
       console.log(data); // デバッグ用
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       if (data.ok) {
         // アクセストークン取得成功
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const accessToken = data.access_token;
         // アクセストークンをデータベースに保存
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const workspaceId = (data.team.id as string) ?? '';
+        const workspaceId = data.team.id;
         const _newWorkspace: Workspace = {
           id: workspaceId,
           name: 'test',
-          accessToken: (accessToken as string) ?? '',
+          accessToken: accessToken ?? '',
           zenkouChannelId: 'test',
           createdAt: Date.now(),
           updatedAt: Date.now(),

@@ -3,13 +3,14 @@ import * as functions from 'firebase-functions';
 
 import { displayPostModal } from '../function/others/displayPostModal';
 import { findWorkspace } from '../function/repository/workspace';
+import { SlashCommandRequestBody } from '../types/slackResponse';
 
 // /zen で呼び出されるエンドポイント
 export const displayModal = functions.region('asia-northeast1').https.onRequest(async (req, res) => {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const workspaceId = req.body.team_id as string;
-    // ワークスペースIDからアクセストークンを取得
+    // request bodyの型を定義
+    const requestBody = req.body as SlashCommandRequestBody;
+    const workspaceId = requestBody.team_id;
     // ワークスペースIDからアクセストークンを取得
     const _workspace = await findWorkspace(workspaceId);
     if (!_workspace) throw new Error('workspace not found');
@@ -17,10 +18,8 @@ export const displayModal = functions.region('asia-northeast1').https.onRequest(
     const slackWebClient = new WebClient(accessToken);
 
     // request bodyから情報を取得
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const channelId = req.body.channel_id as string;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const triggerId = req.body.trigger_id as string;
+    const channelId = requestBody.channel_id;
+    const triggerId = requestBody.trigger_id;
     console.log(req.body); // デバッグ用
 
     try {
