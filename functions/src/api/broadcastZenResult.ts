@@ -10,6 +10,7 @@ import { TotalPoint } from '../types/models/zenkou';
 export const broadcastZenResult = functions
   .region('asia-northeast1')
   .pubsub.schedule('0 0 * * 1')
+  .timeZone('Asia/Tokyo')
   .onRun(async () => {
     try {
       const workspace = await findWorkspace(DOKOKICHI_WORKSPACE_ID);
