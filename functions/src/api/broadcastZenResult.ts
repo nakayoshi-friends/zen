@@ -15,7 +15,8 @@ export const broadcastZenResult = functions
       const workspaceList = await fetchWorkspaceList();
       for (const workspace of workspaceList) {
         if (!workspace) {
-          throw new Error('workspace not found');
+          console.error('workspace not found');
+          continue;
         }
 
         const userList = await fetchUserList(workspace.id);
@@ -38,8 +39,8 @@ export const broadcastZenResult = functions
         const slackWebClient = new WebClient(workspace.accessToken);
         const channelId = workspace.zenkouChannelId;
         if (!channelId) {
-          console.log('env variance is not found');
-          return;
+          console.error('env variance is not found');
+          continue;
         }
         const postMessage: ChatPostMessageArguments = {
           channel: channelId,
