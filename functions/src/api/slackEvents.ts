@@ -23,7 +23,7 @@ export const slackEvents = functions.region('asia-northeast1').https.onRequest(a
       if (!('team_id' in requestBody)) throw new Error('team_id is not found');
       const workspace = await findWorkspace(requestBody.team_id);
       if (!workspace) throw new Error('workspace not found');
-      await displayHomeTab(slackWebClient, workspace?.accessToken, requestBody.event.user);
+      await displayHomeTab(slackWebClient, workspace?.accessToken, requestBody.event.user, workspace.zenkouChannelId);
     }
   } catch (e) {
     console.error('Error: ', e);

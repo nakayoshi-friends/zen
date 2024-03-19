@@ -1,6 +1,11 @@
 import { ViewsPublishArguments, WebClient } from '@slack/web-api';
 
-export const displayHomeTab = async (slackWebClient: WebClient, token: string, userId: string): Promise<void> => {
+export const displayHomeTab = async (
+  slackWebClient: WebClient,
+  token: string,
+  userId: string,
+  initialChannelId: string,
+): Promise<void> => {
   const homeTabViewJSON: ViewsPublishArguments = {
     token: token,
     user_id: userId,
@@ -20,33 +25,31 @@ export const displayHomeTab = async (slackWebClient: WebClient, token: string, u
           },
         },
         {
-          type: 'input',
-          element: {
-            type: 'channels_select',
-            placeholder: {
-              type: 'plain_text',
-              text: 'Select channel',
-              emoji: true,
-            },
-            action_id: 'multi_static_select-action',
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: ':hash: *チャンネルを設定*',
           },
-          label: {
-            type: 'plain_text',
-            text: 'zen用チャンネル',
-            emoji: true,
+        },
+        {
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: '月曜午前0時にzenランキングを投稿するチャンネルを設定します。',
           },
         },
         {
           type: 'actions',
           elements: [
             {
-              type: 'button',
-              text: {
+              type: 'channels_select',
+              initial_channel: initialChannelId,
+              placeholder: {
                 type: 'plain_text',
-                text: 'zen用チャンネルを設定',
+                text: 'チャンネルを選択',
                 emoji: true,
               },
-              action_id: 'set_zen_channel',
+              action_id: 'channel_select-action',
             },
           ],
         },
