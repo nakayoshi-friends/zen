@@ -5,5 +5,6 @@ process.env.TZ = 'Asia/Tokyo';
 export * from './api/broadcastZenResult';
 export * from './api/displayModal';
 export * from './api/oAuth';
+export * from './api/slackEvents';
 export * from './api/slackInteraction';
 export * from './api/test';

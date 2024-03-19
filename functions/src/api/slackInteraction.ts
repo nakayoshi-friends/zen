@@ -4,6 +4,7 @@ import * as functions from 'firebase-functions';
 
 import { postPoint } from '../function/others/postPoint';
 import { sendZenkouForm } from '../function/others/sendZenkouForm';
+import { updateChannelId } from '../function/others/updateChannelId';
 import { findWorkspace } from '../function/repository/workspace';
 import { InteractionRequestBody, ModalInputValues } from '../types/slackResponse';
 
@@ -72,6 +73,14 @@ export const slackInteraction = functions.region('asia-northeast1').https.onRequ
             // 何もしない
             res.status(200).send('OK');
             break;
+          case 'channel_select-action': {
+            if (!('selected_channel' in payload.actions[0])) throw new Error('selected_channel is not found');
+            const selectedChannel = payload.actions[0].selected_channel as string;
+            const teamId = payload.team?.id;
+            await updateChannelId(teamId, selectedChannel);
+            res.status(200).send('OK');
+            break;
+          }
           default:
             console.log('未知のアクションID:', payload?.actions?.[0].action_id);
             res.status(400).send('未知のアクションIDです');

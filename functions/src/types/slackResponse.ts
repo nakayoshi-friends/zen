@@ -48,6 +48,34 @@ export interface InteractionRequestBody {
   response_url?: string;
   actions?: ActionsEntity[] | null;
 }
+
+export interface ChallengeEventRequestBody {
+  token: string;
+  challenge: string;
+  type: string;
+}
+
+export interface BaseEventRequestBody {
+  token: string;
+  team_id: string;
+  api_app_id: string;
+  event: Event;
+  type: string;
+  event_id: string;
+  event_time: number;
+  authed_users: string[];
+}
+
+interface Event {
+  type: string;
+  user: string;
+  text: string;
+  ts: string;
+  channel: string;
+  event_ts: string;
+  channel_type: string;
+}
+
 interface SlackUser {
   id: string;
   username: string;
