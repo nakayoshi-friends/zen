@@ -26,25 +26,11 @@ export const displayPostModal = async (
       },
       blocks: [
         {
-          type: 'input',
-          block_id: 'posted_channel',
-          element: {
-            type: 'plain_text_input',
-            action_id: 'channel_input',
-            initial_value: channelId,
-          },
-          label: {
-            type: 'plain_text',
-            text: 'チャンネルID (変更しないでください)',
-            emoji: true,
-          },
-        },
-        {
           type: 'section',
           block_id: 'zen_user',
           text: {
             type: 'mrkdwn',
-            text: '誰の善行を報告する？',
+            text: '*誰の善行を報告する？*',
           },
           accessory: {
             type: 'users_select',
