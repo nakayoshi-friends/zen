@@ -32,7 +32,7 @@ export const slackInteraction = functions.region('asia-northeast1').https.onRequ
           // モーダルの送信イベントの場合なので、モーダルの入力値の型にキャスト
           const values = payload.view?.state.values as ModalInputValues;
           const selectedUserId = values.zen_user?.['users_select-action']?.selected_user ?? '';
-          const channelId = values.posted_channel?.channel_input?.value ?? '';
+          const channelId = _workspace.zenkouChannelId;
           const userInput = values.zen_content?.['plain_text_input-action']?.value ?? '';
 
           await sendZenkouForm(slackWebClient, selectedUserId, userInput, workspaceId, channelId);
