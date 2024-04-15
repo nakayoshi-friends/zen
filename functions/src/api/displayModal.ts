@@ -1,8 +1,8 @@
 import { WebClient } from '@slack/web-api';
 import * as functions from 'firebase-functions';
 
-import { displayPostModal } from '../function/others/displayPostModal';
 import { findWorkspace } from '../function/repository/workspace';
+import { displayPostModal } from '../function/service/displayPostModal';
 import { SlashCommandRequestBody } from '../types/slackResponse';
 
 // /zen で呼び出されるエンドポイント

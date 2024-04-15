@@ -1,8 +1,8 @@
 import { WebClient } from '@slack/web-api';
 import * as functions from 'firebase-functions';
 
-import { displayHomeTab } from '../function/others/displayHomeTab';
 import { findWorkspace } from '../function/repository/workspace';
+import { displayHomeTab } from '../function/service/displayHomeTab';
 import { BaseEventRequestBody, ChallengeEventRequestBody } from '../types/slackResponse';
 
 export const slackEvents = functions.region('asia-northeast1').https.onRequest(async (req, res) => {
