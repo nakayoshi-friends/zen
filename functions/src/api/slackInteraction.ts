@@ -2,10 +2,10 @@
 import { WebClient } from '@slack/web-api';
 import * as functions from 'firebase-functions';
 
-import { postPoint } from '../function/others/postPoint';
-import { sendZenkouForm } from '../function/others/sendZenkouForm';
-import { updateChannelId } from '../function/others/updateChannelId';
 import { findWorkspace } from '../function/repository/workspace';
+import { postPoint } from '../function/service/postPoint';
+import { sendZenkouForm } from '../function/service/sendZenkouForm';
+import { updateChannelId } from '../function/service/updateChannelId';
 import { InteractionRequestBody, ModalInputValues } from '../types/slackResponse';
 
 // slack上のアクション時呼ばれるエンドポイント

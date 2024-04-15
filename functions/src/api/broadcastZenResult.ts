@@ -1,10 +1,10 @@
 import { ChatPostMessageArguments, WebClient } from '@slack/web-api';
 import * as functions from 'firebase-functions';
 
-import { decideTopZenkouer } from '../function/others/decideTopZenkouer';
-import { shapeRankingScript } from '../function/others/shapeRankingScript';
 import { fetchUserList, updateUser } from '../function/repository/user';
 import { fetchWorkspaceList } from '../function/repository/workspace';
+import { decideTopZenkouer } from '../function/service/decideTopZenkouer';
+import { shapeRankingScript } from '../function/service/shapeRankingScript';
 import { TotalPoint } from '../types/models/zenkou';
 
 export const broadcastZenResult = functions
